@@ -32,7 +32,7 @@ public:
     }
 };
 
-int main()
+int main(int argc, char** argv)
 {
     srand(time(0));
     std::vector<City*> sities;
@@ -51,5 +51,7 @@ int main()
         std::cout << "\n\n";
     }
 
+    MPI_Init(&argc, &argv);
+    MPI_Finalize();
 }
 
