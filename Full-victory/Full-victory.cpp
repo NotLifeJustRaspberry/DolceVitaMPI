@@ -5,53 +5,37 @@
 
 #include <iostream>
 #include <mpi.h>
-#include <vector>
 
 const int CITY_AMOUNT = 20;
 
-class City {
-private:
-    char code[6];
-    char character;
-
-public:
-    City() {        
-        for (int i = 0; i < sizeof(code); i++)
-        {
-            character = 97 + rand() % 25;
-            code[i] = character;
-        }
-    }
-    ~City() { }
-
-    char* get_code() {
-        return code;
-    }
-    void recieve_code() {
-
-    }
-};
-
-int main(int argc, char** argv)
-{
-    srand(time(0));
-    std::vector<City*> sities;
-
-    for (int i = 0; i < CITY_AMOUNT; i++)
-    {
-        sities.push_back(new City());
-    }
-
-    for (int j = 0; j < CITY_AMOUNT; j++)
-    {
-        for (int i = 0; i < sizeof(sities[j]->get_code()) - 2; i++)
-        {
-            std::cout << sities[j]->get_code()[i];
-        }
-        std::cout << "\n\n";
-    }
+int main(int argc, char** argv) {
+	int rank, size, len;
+	char proc_name[MPI_MAX_PROCESSOR_NAME];
+	MPI_Status status;
+	srand((unsigned int)time(0));
+	char sender[5] = { 97 + rand() % 25, 97 + rand() % 25 , 97 + rand() % 25 , 97 + rand() % 25 , 97 + rand() % 25 };
 
     MPI_Init(&argc, &argv);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	
+	printf("Proc name %s, Rank %d, Size %d\n\n", proc_name, rank, size);
+
+	if (rank == 0) {
+		char crypt[100] = "";
+		MPI_Gather(&sender, sizeof(sender), MPI_CHAR, &crypt, sizeof(sender), MPI_CHAR, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&crypt, sizeof(crypt), MPI_CHAR, 0, MPI_COMM_WORLD);
+		printf("Crypt %s\n\n", crypt);
+		}
+
+	if (rank > 0 && rank <= 20) {
+		//char sender[5] = { 97 + rand() % 25, 97 + rand() % 25 , 97 + rand() % 25 , 97 + rand() % 25 , 97 + rand() % 25 };
+		char recv_crypt[100];
+		MPI_Send(&sender, sizeof(sender), MPI_CHAR, 0, 5, MPI_COMM_WORLD);
+		printf("Loc Crypt %s\n\n", sender);
+		MPI_Recv(&recv_crypt, 100, MPI_CHAR, 0, 5, MPI_COMM_WORLD, &status);
+		printf("Recv Crypt %s\n\n", recv_crypt);
+	}
     MPI_Finalize();
 }
 
