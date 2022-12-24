@@ -11,6 +11,8 @@ namespace UnitTest
 		
 		TEST_METHOD(TestMethod1)
 		{
+			// Классов нет, функций тоже
+			// Не знаю, что тестировать =)
 		}
 	};
 }
