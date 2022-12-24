@@ -7,10 +7,10 @@
 #include <mpi.h>
 
 int main(int argc, char** argv) {
-	
+
 	int rank, size;
 
-    MPI_Init(&argc, &argv);
+	MPI_Init(&argc, &argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	srand((unsigned int)time(0) * rank);
@@ -28,5 +28,5 @@ int main(int argc, char** argv) {
 		printf("%d ", crypt[i]);
 	}
 	printf("\n\n");
-    MPI_Finalize();
+	MPI_Finalize();
 }
